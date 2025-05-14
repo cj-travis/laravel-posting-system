@@ -2,7 +2,7 @@
     <h1 class="title w-fit mb-4 md:mx-auto">Create account</h1>
 
     <div class="mx-auto max-w-screen-sm card">
-        <form action="{{ route('register') }}" method="POST" x-data="formSubmit" @submit.prevent="submit">
+        <form action="{{ route('register') }}" method="POST">
             @csrf
 
             {{-- Username --}}
@@ -50,9 +50,13 @@
             </div>
 
             {{-- Submit Button --}}
-            <button class="btn" x-ref="btn">Register</button>
+            <button class="btn">Register</button>
 
         </form>
+
+        <div class="w-fit mx-auto mt-4">
+            <a class="hover:underline text-xs" href="{{ route('login') }}">Already have an account?</a>
+        </div>
     </div>
 
 

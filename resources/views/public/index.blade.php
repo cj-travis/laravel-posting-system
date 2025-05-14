@@ -11,7 +11,7 @@
 
         <div class="flex flex-col justify-center items-center">
           <p class="text-base md:text-[22px] text-center">Your only posting system, <span class="text-[#12d30f]">save</span> your posts here and <span class="text-[#12d30f]">share</span> it with others!</p>
-          <button class="button rounded-4xl text-white bg-[#12d30f] p-5 mt-7 mb-3 shadow-xl transition delay-100 duration-200 ease-in-out hover:-translate-y-1 hover:shadow-xl/20 ">Create your first post!</button>
+          <a href="{{ route('dashboard') }}" class="button rounded-4xl text-white bg-[#12d30f] p-5 mt-7 mb-3 shadow-xl transition delay-100 duration-200 ease-in-out hover:-translate-y-1 hover:shadow-xl/20 ">Create your first post!</a>
           <p class="text-sm">Remember, Sharing is Caring <span class="text-red-500">❤</span></p>
 
         </div>
@@ -22,6 +22,16 @@
         <i class="fa-solid fa-arrow-down animate-bounce"></i>
 
       </div>
+    </div>
+
+    <div class="my-12 md:grid md:grid-cols-2 md:gap-6">
+        @foreach ($posts as $post)
+
+            <div class="card my-2 md:my-0">
+                <x-postCard :post="$post"/>
+                
+            </div>
+        @endforeach
     </div>
     
 </x-layout>

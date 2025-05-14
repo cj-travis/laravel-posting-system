@@ -47,6 +47,10 @@
             <button class="btn">Login</button>
 
         </form>
+
+        <div class="w-fit mx-auto mt-4">
+            <a class="hover:underline text-xs" href="{{ route('register') }}">Don't have an account?</a>
+        </div>
     </div>
 
 </x-layout>
