@@ -71,13 +71,13 @@
         <div class="my-2 md:grid md:grid-cols-2 md:gap-6">
             @foreach ($posts as $post)
 
-                <div class="card my-2 md:my-0">
+                <div class="card md:my-0">
 
                     {{-- postCard --}}
                     <x-postCard :post="$post">
 
                         {{-- buttons --}}
-                        <div class="mt-4 flex flex-row h-fit gap-1">
+                        <div class="mt-1 flex flex-row h-fit gap-1">
                            
 
                             {{-- UPDATE --}}

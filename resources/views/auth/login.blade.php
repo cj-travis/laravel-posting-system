@@ -36,7 +36,7 @@
                     <label for="remember">Remember me</label>
                 </div>
 
-                <a class="text-blue-600" href="">Forget your password?</a>
+                <a class="text-blue-600" href="{{ route('password.request') }}">Forget your password?</a>
             </div>
 
             @error('failed')

@@ -28,11 +28,22 @@
 
             @auth
                 {{-- Mobile Navbar --}}
-                <div class="w-fit block md:hidden" x-data="{ open: false }">
-                    <i class="fa-solid fa-bars" @click="open = !open" x-show="!open"></i>
+                <div class="w-fit block md:hidden flex flex-row justify-center items-center gap-2" x-data="{ open: false }">
+                    <div class="flex flex-row justify-center items-center gap-2">
+                        <span>{{ Auth::user()->username }}</span>
+                        @if (Auth::user()->profile_picture)
+                            <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" alt="pfp" class="aspect-square rounded-full object-cover h-[30px]" @click="open = !open" x-show="!open">
+                            
+                        @else
+                            <img src="{{ asset('storage/profile_pictures/default_pfp.jpg') }}" alt="pfp" class="aspect-square rounded-full object-cover h-[30px]" @click="open = !open" x-show="!open">
+                            
+                        @endif
+                    </div>
+                    
+                    {{-- <i class="fa-solid fa-bars" @click="open = !open" x-show="!open"></i> --}}
                     <i class="fa-solid fa-xmark" @click="open = !open" x-show="open"></i>
                     <ul class="bg-white shadow-lg absolute top-[80px] right-0 overflow-hidden font-light px-6"  x-show="open" @click.outside="open = false">
-                        <li class="p-3"><a href="{{ route('profile') }}">Profile</a></li>
+                        <li class="p-3"><a href="{{ route('user.show', Auth::user()) }}">Profile</a></li>
                         <li class="p-3"><a href="{{ route('login') }}">Dashboard</a></li>
                         <li class="p-3"><a href="{{ route('posts') }}">Posts</a></li>
                         <li class="p-3">
@@ -50,8 +61,19 @@
 
                 {{-- Desktop Navbar --}}
                 <div class="w-fit hidden md:block">
-                    <ul class="flex flex-row gap-4">
-                        <li class="p-3"><a href="{{ route('profile') }}">Profile</a></li>
+                    <ul class="flex flex-row gap-4 justify-center items-center">
+                        <li class="p-3">
+                            <a href="{{ route('user.show', Auth::user()) }}" class="flex flex-row justify-center items-center gap-2">
+                                @if (Auth::user()->profile_picture)
+                                    <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" alt="pfp" class="aspect-square rounded-full object-cover h-[30px]" @click="open = !open" x-show="!open">
+                                    
+                                @else
+                                    <img src="{{ asset('storage/profile_pictures/default_pfp.jpg') }}" alt="pfp" class="aspect-square rounded-full object-cover h-[30px]" @click="open = !open" x-show="!open">
+                                    
+                                @endif
+                                Profile
+                            </a>
+                        </li>
                         <li class="p-3"><a href="{{ route('login') }}">Dashboard</a></li>
                         <li class="p-3"><a href="{{ route('posts') }}">Posts</a></li>
                         <li class="py-1">
@@ -108,10 +130,13 @@
                     <span class="text-xl font-cal text-[#12d30f]"><a href="{{ route('index') }}">SaveNShare</a></span>
                     <ul class="flex flex-wrap items-center mb-6 mt-2 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
                         <li>
+                            <a href="{{ route('user.show', Auth::user())  }}" class="hover:underline me-4 md:me-6">Dashboard</a>
+                        </li>
+                        <li>
                             <a href="{{ route('dashboard')  }}" class="hover:underline me-4 md:me-6">Dashboard</a>
                         </li>
                         <li>
-                            <a href="#" class="hover:underline me-4 md:me-6">Posts</a>
+                            <a href="{{ route('posts') }}" class="hover:underline me-4 md:me-6">Posts</a>
                         </li>
                         <li>
                             <a href="#" class="hover:underline me-4 md:me-6">Privacy Policy</a>
@@ -137,7 +162,7 @@
                             <a href="{{ route('register') }}" class="hover:underline me-4 md:me-6">Register</a>
                         </li>
                         <li>
-                            <a href="#" class="hover:underline me-4 md:me-6">Posts</a>
+                            <a href="{{ route('posts') }}" class="hover:underline me-4 md:me-6">Posts</a>
                         </li>
                         <li>
                             <a href="#" class="hover:underline me-4 md:me-6">Privacy Policy</a>

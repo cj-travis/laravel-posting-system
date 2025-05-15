@@ -1,4 +1,6 @@
 <x-layout>
+    <a href="{{ route('user.show', $user) }}" class="block mb-2 text-xs text-blue-500">&larr;Go back to your profile</a>
+
     <h1>Edit Profile</h1>
 
     <div class="card">

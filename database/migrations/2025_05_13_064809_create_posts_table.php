@@ -16,7 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('title');
             $table->text('body');
+            $table->enum('status', ['show', 'hidden', 'blocked', 'unblocked'])->default('show');
             $table->string('image')->nullable();
+            $table->integer('likes')->default(0);
             $table->timestamps();
         });
     }

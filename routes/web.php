@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,9 +18,13 @@ Route::get('/posts', [PostController::class, 'posts'])->name('posts');
 Route::middleware('auth')->group(function() {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     
-    Route::get('/user', [UserController::class, 'index'])->name('profile');
+    // Route::get('/user', [UserController::class, 'index'])->name('profile');
     
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::get('/reset-user-password/{user}', [ResetPasswordController::class, 'userPasswordReset'])->name('userpassword.reset');
+
+    Route::post('/update-user-password', [ResetPasswordController::class, 'userPasswordUpdate'])->name('userpassword.update');
 });
 
 // routes for guests
@@ -29,4 +34,18 @@ Route::middleware('guest')->group(function() {
 
     Route::view('/register', 'auth.register')->name('register');
     Route::post('/register', [AuthController::class, 'register']);
+
+    Route::view('/forgot-password', 'auth.forgot-password')->name('password.request');
+
+    // Route::post('/forgot-password', function (Request $request) {
+    //     $request->validate(['email' => 'required|email']);
+    
+    //     $status = Password::sendResetLink(
+    //         $request->only('email')
+    //     );
+    
+    //     return $status === Password::ResetLinkSent
+    //         ? back()->with(['status' => __($status)])
+    //         : back()->withErrors(['email' => __($status)]);
+    // })->middleware('guest')->name('password.email');
 });

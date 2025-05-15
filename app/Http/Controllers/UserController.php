@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -14,12 +15,16 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(User $user)
     {
         //
-        $user = Auth::user();
+        // $user = Auth::user();
 
-       return view('users.show', ['user' => $user]);
+        // if ($user == null) {
+        //     $user = Auth::user();
+        // }
+
+    //    return view('users.show', ['user' => $user]);
     }
 
     /**
@@ -43,7 +48,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-       
+        $userPosts = $user->posts()->latest()->paginate(6);
+
+        return view('users.show', ['posts' => $userPosts, 'user' => $user]);
     }
 
     /**
@@ -90,14 +97,47 @@ class UserController extends Controller
         ]);
 
         // Redirect to dashboard
-        return redirect()->route('profile')->with('success', 'Profile was updated');
+        return redirect()->route('user.show', $user)->with('success', 'Profile was updated');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $user, Request $request)
     {
-        
+         // user authorization
+        Gate::authorize('modify', $user);
+
+        // Validate
+        $request->validate([
+            'password' => ['required'],
+            'delete_account' => ['required']
+        ]);
+
+        // Check password
+        if (!Hash::check($request->password, $user->password)) {
+
+            // Return an error if the password is incorrect
+            return redirect()->route('user.show', $user)->withErrors(['password' => 'incorrect password'])->with('modalOpen', true);
+        }
+
+        // Check password
+        if ($request->delete_account !== 'delete') {
+
+            // Return an error if the password is incorrect
+            return redirect()->route('user.show', $user)->withErrors(['delete_account' => 'Please ensure its typed correctly'])->with('modalOpen', true);
+        }
+
+        // delete profile picture if exists
+        if ($user->profile_picture)
+        {
+            Storage::disk('public')->delete($user->profile_picture);
+        }
+
+        // delete the user
+        $user->delete();
+
+        // redirect to homepage
+        return redirect()->route('/')->with('success', 'Account deleted successfully');
     }
 }

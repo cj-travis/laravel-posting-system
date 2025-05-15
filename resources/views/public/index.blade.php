@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <div class="my-12 md:grid md:grid-cols-2 md:gap-6">
+    <div class="mt-12 md:grid md:grid-cols-2 md:gap-6">
         @foreach ($posts as $post)
 
             <div class="card my-2 md:my-0">
@@ -33,5 +33,7 @@
             </div>
         @endforeach
     </div>
+
+    <a href="{{ route('posts') }}" class="hover:underline flex w-fit mx-auto mt-2 mb-6 text">See more</a>
     
 </x-layout>

@@ -1,7 +1,18 @@
 <x-layout>
+     {{-- Session messages --}}
+    @if (session('success'))
+        <x-flashMsg msg="{{ session('success') }}" bg="bg-green-500"/>
+    @endif
+
+    @if (session('failed'))
+        <x-flashMsg msg="{{ session('failed') }}" bg="bg-red-500"/>
+    @endif
+
+    <a href="{{ route('posts') }}" class="block mb-2 text-xs text-blue-500">&larr;Go back to home</a>
+
     <h1 class="title">{{ $user->username }}'s Profile</h1>
 
-    <div class="card flex flex-col mt-4 h-fit justify-center gap-12">
+    <div class="card flex flex-col mt-4 h-fit justify-center gap-12" x-data="{ open: {{ session('modalOpen') ? 'true' : 'false' }} }">
         <div class="flex flex-row gap-12">
             <div class="w-[250px]">
                 @if ($user->profile_picture)
@@ -26,12 +37,102 @@
             </div>
         </div>
         
-
+    @if ($user == Auth::user())
         <div class="h-fit flex flex-row gap-2">
-            <a href="{{ route('user.edit', $user) }}" class="btn text text-center">Edit</a>
-            <button class="btn text">Reset Password</button>
-            <button class="btn text">Delete Account</button>
-        </div>
+                <a href="{{ route('user.edit', $user) }}" class="btn text text-center flex flex-col items-center justify-center">Edit</a>
+                <a href="{{ route('userpassword.reset', $user->id) }}" class="btn text text-center flex flex-col items-center justify-center">Reset Password</a>
+                <button class="btn text" @click="open = true">Delete Account</button>
+            </div>
+
+            <div x-show="open" x-transition class="fixed inset-0 bg-slate-700 z-10 flex justify-center items-center" style="background-color: rgba(0, 0, 0, 0.5);" @click.away="open = false; $wire.set('modalOpen', false)">
+                <div  class="bg-white p-6 rounded-lg shadow-lg w-96">
+                    <div class="flex flex-row w-full justify-between gap-2 mb-2">
+                        <span class="title">Delete Account</span>
+                        <i class="fa-solid fa-xmark" @click="open = !open" x-show="open"></i>
+
+                    </div>
+                    {{-- DELETE FORM --}}
+                    <form action="{{ route('user.destroy', $user) }}" method="post">
+                        @csrf
+                        @method('DELETE')
+
+                        {{-- Password --}}
+                        <div class="mb-4">
+                            <label for="password">Password</label>
+                            <input type="password" name="password" class="input @error('password') ring-red-500 @enderror">
+                            @error('password')
+                                <p class="error">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Confirm Delete --}}
+                        <div class="mb-4">
+                            <label for="delete_account">Type "delete" to confirm</label>
+                            <input type="text" placeholder="delete" name="delete_account" class="input @error('delete_account') ring-red-500 @enderror">
+                            @error('delete_account')
+                                <p class="error">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <button class="btn">Confirm</button>
+                    </form>
+                    
+                </div>
+            </div>
+        @endif
+    </div>
+
+    {{-- User posts --}}
+    <h2 class="mt-6">{{ $user->username }}'s posts ({{ $posts->total() }})</h2>
+
+    <div class="mb-4 md:grid md:grid-cols-2 md:gap-6">
+        @if ($posts->count() == 0)
+            <div class="w-fit mx-auto my-12"><span>No results found</span></div>
+        @else
+            @foreach ($posts as $post)
+
+                <div class="card my-2 md:my-0">
+                    <x-postCard :post="$post">
+                        {{-- remeber to put the urllll --}}
+                        <input type="text" value="{{ route('posts.show', $post->id) }}" id="copyLink" readonly class="copyLink opacity-0 absolute -z-1">
+
+                        <div class="flex flex-row gap-3 pt-4 mt-auto mb-0 h-full">
+                            @auth
+                                <i class="fa-regular fa-heart fa-lg"></i>
+                                <i class="fa-regular fa-comment fa-lg"></i>
+                            @endauth
+                            
+                            {{-- <i class="fa-solid fa-share-nodes fa-lg"></i> --}}
+                            <button id="copyButton" class="copyButton m-0 p-0 inline-flex items-center"><i class="fa-solid fa-share-nodes fa-lg"></i></button>
+                        </div>
+
+                    </x-postCard>
+                </div>
+            @endforeach
+        @endif
         
     </div>
+
+    <div>
+        {{ $posts->links() }}
+    </div>
+
+    <script>
+        document.querySelectorAll('.copyButton').forEach(function(button, index) {
+        button.addEventListener('click', function() {
+            // Get the input field that corresponds to this button
+            var copyText = document.querySelectorAll('.copyLink')[index];
+            
+            // Select the text field
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+
+            // Copy the text inside the input
+            document.execCommand('copy');
+
+            // Alert the user that the text has been copied
+            alert("Link copied to clipboard: " + copyText.value);
+        });
+    });
+    </script>
 </x-layout>

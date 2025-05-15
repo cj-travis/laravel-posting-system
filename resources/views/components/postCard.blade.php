@@ -3,12 +3,13 @@
 @if ($full)
     <div class="w-full flex flex-col gap-2 h-fit">
 @else
-    <div class="w-full flex flex-row md:flex-col xl:flex-row gap-2 h-fit">
+    <div class="w-full flex flex-col sm:flex-row md:flex-col xl:flex-row gap-2 h-fit">
 @endif
 
 
     @if ($post->image && $full == false)
-        <div class="w-[70%] md:w-full xl:w-[70%] flex flex-col h-[100%] justify-between">
+        {{-- <div class="w-[70%] md:w-full xl:w-[70%] flex flex-col h-[100%] justify-between"> --}}
+        <div class="w-full sm:w-[70%] md:w-full xl:w-[70%] flex flex-col h-[100%] justify-between">
     @else
         <div class="justify-between">
     @endif
@@ -19,7 +20,7 @@
             {{-- Author and Date --}}
             <div class="text-xs font-light mb-4">
                     <span>Posted {{ $post->created_at->DiffForHumans() }} by </span>
-                <a href="" class="text-blue-500 font-medium">{{ $post->user->username }}</a>
+                <a href="{{ route('user.show', $post->user) }}" class="text-blue-500 font-medium">{{ $post->user->username }}</a>
             </div>
 
             {{-- body --}}
@@ -34,7 +35,7 @@
         </div>
         
 
-        <div class="block md:hidden xl:block mt-auto mb-0 py-2">
+        <div class="hidden sm:block md:hidden xl:block mt-auto mb-0 py-2">
             {{ $slot }}
         </div>
 
@@ -43,11 +44,11 @@
 
     {{-- image --}}
     @if ($post->image)
-        <img class="w-[30%] md:w-full xl:w-[30%] object-cover max-h-[200px]" src="{{ asset('storage/' . $post->image) }}" alt="">
+        <img class="w-full sm:w-[30%] md:w-full xl:w-[30%] object-cover max-h-[200px]" src="{{ asset('storage/' . $post->image) }}" alt="">
     @endif
     
 
-    <div class="hidden md:block xl:hidden h-full mb-0 mt-auto py-2">
+    <div class="block sm:hidden md:block xl:hidden h-full mb-0 mt-auto py-2">
         {{ $slot }}
     </div>
 
