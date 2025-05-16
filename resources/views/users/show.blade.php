@@ -93,17 +93,19 @@
 
                 <div class="card my-2 md:my-0">
                     <x-postCard :post="$post">
-                        {{-- remeber to put the urllll --}}
                         <input type="text" value="{{ route('posts.show', $post->id) }}" id="copyLink" readonly class="copyLink opacity-0 absolute -z-1">
 
-                        <div class="flex flex-row gap-3 pt-4 mt-auto mb-0 h-full">
+                        <div class="flex flex-row gap-3 pt-0 mt-auto mb-0 h-full">
                             @auth
-                                <i class="fa-regular fa-heart fa-lg"></i>
-                                <i class="fa-regular fa-comment fa-lg"></i>
+                                <a href=""><i class="fa-regular fa-heart fa-lg"></i></a>
+                                <a href="{{ route('posts.show', $post->id) }}"><i class="fa-regular fa-comment fa-lg"></i></a>
+                                <button id="copyButton" class="copyButton m-0 pt-0 inline-flex items-center cursor-pointer"><i class="fa-solid fa-share-nodes fa-lg"></i></button>
                             @endauth
                             
-                            {{-- <i class="fa-solid fa-share-nodes fa-lg"></i> --}}
-                            <button id="copyButton" class="copyButton m-0 p-0 inline-flex items-center"><i class="fa-solid fa-share-nodes fa-lg"></i></button>
+                            @guest
+                                <button id="copyButton" class="copyButton m-0 pt-2 inline-flex items-center cursor-pointer"><i class="fa-solid fa-share-nodes fa-lg"></i></button>
+                                
+                            @endguest
                         </div>
 
                     </x-postCard>
@@ -116,23 +118,4 @@
     <div>
         {{ $posts->links() }}
     </div>
-
-    <script>
-        document.querySelectorAll('.copyButton').forEach(function(button, index) {
-        button.addEventListener('click', function() {
-            // Get the input field that corresponds to this button
-            var copyText = document.querySelectorAll('.copyLink')[index];
-            
-            // Select the text field
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); // For mobile devices
-
-            // Copy the text inside the input
-            document.execCommand('copy');
-
-            // Alert the user that the text has been copied
-            alert("Link copied to clipboard: " + copyText.value);
-        });
-    });
-    </script>
 </x-layout>

@@ -2,12 +2,6 @@
     <div class="w-full flex flex-row justify-between">
         <h1 class="title">All Posts ({{ $posts->total() }})</h1>
 
-        {{-- <select name="" id="">
-            <option value="new">Newest</option>
-            <option value="old">Oldest</option>
-            <option value="like">Most Liked</option>
-        </select> --}}
-
         <form method="GET" action="{{ route('posts') }}" class="flex gap-2">
             
             <select name="sort" id="sort" class="px-2">
@@ -34,17 +28,37 @@
 
                 <div class="card my-2 md:my-0">
                     <x-postCard :post="$post">
-                        {{-- remeber to put the urllll --}}
                         <input type="text" value="{{ route('posts.show', $post->id) }}" id="copyLink" readonly class="copyLink opacity-0 absolute -z-1">
 
-                        <div class="flex flex-row gap-3 pt-4 mt-auto mb-0 h-full">
+                        <div class="flex flex-row gap-3 pt-0 mt-auto mb-0 h-full">
                             @auth
-                                <i class="fa-regular fa-heart fa-lg"></i>
-                                <i class="fa-regular fa-comment fa-lg"></i>
+
+                                <div class="flex flex-row gap-1">
+                                    @if (!Auth::user()->likes()->where('post_id', $post->id)->exists())
+                                    <form action="{{ route('like.store') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="post_id" value="{{ $post->id }}"/>
+                                        <button class="cursor-pointer"><i class="fa-regular fa-heart fa-lg"></i></button>
+                                    </form>
+                                    @else
+                                        @php
+                                            // Retrieve the like object if it exists for the current user and post
+                                            $like = Auth::user()->likes()->where('post_id', $post->id)->first();
+                                        @endphp
+
+                                        <form action="{{ route('like.destroy', $like) }}" method="post">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="cursor-pointer"><i class="fa-solid fa-heart fa-lg text-red-500"></i></button>
+                                        </form>
+                                    @endif
+                                    <span class="text-slate-900 m-0">{{ $post->likes }}</span>
+                                </div>
+
+                                <a href="{{ route('posts.show', $post->id) }}"><i class="fa-regular fa-comment fa-lg"></i></a>
                             @endauth
-                            
-                            {{-- <i class="fa-solid fa-share-nodes fa-lg"></i> --}}
-                            <button id="copyButton" class="copyButton m-0 p-0 inline-flex items-center"><i class="fa-solid fa-share-nodes fa-lg"></i></button>
+                        
+                            <button id="copyButton" class="copyButton m-0 p-0 inline-flex items-center cursor-pointer"><i class="fa-solid fa-share-nodes fa-lg"></i></button>
                         </div>
 
                     </x-postCard>
@@ -57,23 +71,4 @@
     <div>
         {{ $posts->links() }}
     </div>
-
-    <script>
-        document.querySelectorAll('.copyButton').forEach(function(button, index) {
-        button.addEventListener('click', function() {
-            // Get the input field that corresponds to this button
-            var copyText = document.querySelectorAll('.copyLink')[index];
-            
-            // Select the text field
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); // For mobile devices
-
-            // Copy the text inside the input
-            document.execCommand('copy');
-
-            // Alert the user that the text has been copied
-            alert("Link copied to clipboard: " + copyText.value);
-        });
-    });
-    </script>
 </x-layout>

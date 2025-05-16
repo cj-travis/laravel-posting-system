@@ -197,5 +197,45 @@
         });
     </script>
 
+    <script>
+        // Set form: x-data="formSubmit" @submit.prevent="submit" and button: x-ref="btn"
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('formSubmit', () => ({
+                submit() {
+                    this.$refs.btn.disabled = true;
+                    this.$refs.btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                    this.$refs.btn.innerHTML = 
+                        `
+                        <span class="absolute left-2 top-1/2 -translate-y-1/2 transform">
+                            <i class="fa-solid fa-spinner animate-spin"></i>
+                        </span>Please wait...
+                        `;
+                    
+                    this.$el.submit();
+                }
+            }))
+        })
+    </script>
+
+    <script>
+        document.querySelectorAll('.copyButton').forEach(function(button, index) {
+        button.addEventListener('click', function() {
+            // Get the input field that corresponds to this button
+            var copyText = document.querySelectorAll('.copyLink')[index];
+            
+            // Select the text field
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+
+            // Copy the text inside the input
+            document.execCommand('copy');
+
+            // Alert the user that the text has been copied
+            alert("Link copied to clipboard: " + copyText.value);
+        });
+    });
+    </script>
+
   </body>
 </html>

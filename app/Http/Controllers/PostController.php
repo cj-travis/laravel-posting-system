@@ -19,7 +19,7 @@ class PostController extends Controller
     {
         //
 
-        $posts = Post::latest()->paginate(6);
+        $posts = Post::orderBy('likes', 'desc')->paginate(6);
 
         // dd($posts);
 
@@ -68,7 +68,11 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return view('posts.show', ['post' => $post]);
+        $postComments = $post->comments()->latest()->paginate(10);
+
+        // dd($postComments);
+
+        return view('posts.show', ['comments' => $postComments, 'post' => $post]);
     }
 
     /**
@@ -151,8 +155,8 @@ class PostController extends Controller
         ->when($sort, function ($query) use ($sort) {
             if ($sort === 'old') {
                 $query->oldest();
-            // } elseif ($sort === 'like') {
-            //     $query->orderBy('likes_count', 'desc');
+            } elseif ($sort === 'like') {
+                $query->orderBy('likes', 'desc');
             } else {
                 $query->latest();
             }

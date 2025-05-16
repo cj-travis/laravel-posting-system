@@ -44,7 +44,7 @@
 
     {{-- image --}}
     @if ($post->image)
-        <img class="w-full sm:w-[30%] md:w-full xl:w-[30%] object-cover max-h-[200px]" src="{{ asset('storage/' . $post->image) }}" alt="">
+        <img class="w-full sm:w-[30%] md:w-full xl:w-[30%] object-cover max-h-[200px] rounded-lg" src="{{ asset('storage/' . $post->image) }}" alt="">
     @endif
     
 

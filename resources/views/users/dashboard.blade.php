@@ -2,11 +2,9 @@
     {{-- Session messages --}}
     @if (session('success'))
         <x-flashMsg msg="{{ session('success') }}" bg="bg-green-500"/>
-        {{-- <p class="text-green-500">{{ session('success') }}</p> --}}
 
     @elseif (session('deleted'))
         <x-flashMsg msg="{{ session('deleted') }}" bg="bg-red-500"/>
-        {{-- <p class="text-green-500">{{ session('success') }}</p> --}}
     @endif
 
     <h1 class="title">Dashboard</h1>

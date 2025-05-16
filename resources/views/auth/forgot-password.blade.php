@@ -5,7 +5,6 @@
     {{-- Session messages --}}
     @if (session('status'))
         <x-flashMsg msg="{{ session('status') }}" bg="bg-green-500"/>
-
     @endif
 
     <div class="mx-auto max-w-screen-sm card">
