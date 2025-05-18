@@ -8,20 +8,21 @@ use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller
 {
     public function dashboard(Request $request) {
-        //
-        // $posts = Auth::user()->posts()->latest()->paginate(6);
 
+        // input value
         $searchTerm = $request->input('search');
         
-        // Query posts: If search term is provided, filter by title or content
+        // query the result if input is not empty filter by title or content
         $posts = Auth::user()->posts()
             ->when($searchTerm, function ($query) use ($searchTerm) {
                 $query->where('title', 'like', '%' . $searchTerm . '%')
                       ->orWhere('body', 'like', '%' . $searchTerm . '%');
             })
+            ->where('user_id', Auth::user()->id)
             ->latest()
             ->paginate(6);
 
+        // redirect to dashboard
         return view('users.dashboard', ['user' => Auth::user(), 'posts' => $posts]);
     }
 }

@@ -58,41 +58,30 @@
 
     <div class="my-6">
          
-
         <h2>Your latest posts ({{ $posts->total() }})</h2>
 
+        {{-- search own posts --}}
         <form method="GET" action="{{ route('dashboard') }}" class="my-4 w-full flex flex-row gap-2">
             <input type="text" name="search" placeholder="Search posts..." class="border rounded p-1 px-2 w-[60%] lg:w-[80%]" value="{{ request('search') }}">
             <button type="submit" class="btn px-4 py-1 rounded-md w-[40%] lg:w-[20%]">Search</button>
         </form>
 
-        <div class="my-2 md:grid md:grid-cols-2 md:gap-6">
-            @foreach ($posts as $post)
-
-                <div class="card md:my-0">
-
-                    {{-- postCard --}}
-                    <x-postCard :post="$post">
-
-                        {{-- buttons --}}
-                        <div class="mt-1 flex flex-row h-fit gap-1">
-                           
-
-                            {{-- UPDATE --}}
-                            <a href="{{ route('posts.edit', $post) }}" class="bg-green-500 text-white px-2 py-1 text-xs rounded-md hover:opacity-[0.8]">Update</a>
-                            
-                            {{-- DELETE --}}
-                            <form action="{{ route('posts.destroy', $post) }}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button class="bg-red-500 text-white px-2 py-1 text-xs rounded-md hover:opacity-[0.8]">Delete</button>
-                            </form>
-                        </div>
-                    </x-postCard>
-                    
-                </div>
-            @endforeach
-        </div>
+        {{-- if no results are found --}}
+        @if ($posts->count() == 0)
+            <div class="w-full flex flex-col">
+                <span class="w-fit mx-auto my-6">No results found</span>
+            </div>
+        {{-- display filtered results --}}
+        @else
+            <div class="my-2 md:grid md:grid-cols-2 md:gap-6">
+                @foreach ($posts as $post)
+                    <div class="card md:my-0">
+                        {{-- postCard --}}
+                        <x-postCard :post="$post"/>
+                    </div>
+                @endforeach
+            </div>
+        @endif
 
         <div>
             {{$posts->links()}}

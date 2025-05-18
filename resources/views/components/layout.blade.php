@@ -12,17 +12,15 @@
   </head>
   <body>
     {{-- Top Navbar --}}
-    <nav class="bg-white z-10 min-h-[80px] shadow flex flex-row items-center" id="topnav">
+    <nav class="bg-white z-10 h-[80px] shadow flex flex-row items-center absolute" id="topnav">
         <div class="w-full flex flex-row justify-between px-6 py-4">
             <div class="w-fit my-auto">
                 @auth
                     <span class="text-xl p-3 font-cal text-[#12d30f]"><a href="{{ route('posts') }}">SaveNShare</a></span>
-                    
                 @endauth
 
                 @guest
                     <span class="text-xl p-3 font-cal text-[#12d30f]"><a href="{{ route('index') }}">SaveNShare</a></span>
-                    
                 @endguest
             </div>
 
@@ -40,7 +38,6 @@
                         @endif
                     </div>
                     
-                    {{-- <i class="fa-solid fa-bars" @click="open = !open" x-show="!open"></i> --}}
                     <i class="fa-solid fa-xmark" @click="open = !open" x-show="open"></i>
                     <ul class="bg-white shadow-lg absolute top-[80px] right-0 overflow-hidden font-light px-6"  x-show="open" @click.outside="open = false">
                         <li class="p-3"><a href="{{ route('user.show', Auth::user()) }}">Profile</a></li>
@@ -119,18 +116,15 @@
         {{ $slot }}
     </div>
 
-    {{-- for scrolling purposes --}}
-    {{-- <div class="h-[1000px]"></div>  --}}
-
     {{-- footer --}}
-    @auth
-         <footer class="bg-white rounded-lg shadow-sm dark:bg-gray-800 m-2">
-            <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-                <div class="sm:flex sm:items-center sm:justify-between">
-                    <span class="text-xl font-cal text-[#12d30f]"><a href="{{ route('index') }}">SaveNShare</a></span>
+    <footer class="bg-white rounded-lg shadow-sm dark:bg-gray-800 m-2">
+        <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+            <div class="sm:flex sm:items-center sm:justify-between">
+                @auth
+                    <span class="text-xl font-cal text-[#12d30f]"><a href="{{ route('posts') }}">SaveNShare</a></span>
                     <ul class="flex flex-wrap items-center mb-6 mt-2 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
                         <li>
-                            <a href="{{ route('user.show', Auth::user())  }}" class="hover:underline me-4 md:me-6">Dashboard</a>
+                            <a href="{{ route('user.show', Auth::user())  }}" class="hover:underline me-4 md:me-6">Profile</a>
                         </li>
                         <li>
                             <a href="{{ route('dashboard')  }}" class="hover:underline me-4 md:me-6">Dashboard</a>
@@ -142,17 +136,9 @@
                             <a href="#" class="hover:underline me-4 md:me-6">Privacy Policy</a>
                         </li>
                     </ul>
-                </div>
-                <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-                <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© {{ now()->year }} SaveNShare</span>
-            </div>
-        </footer>
-    @endauth
+                @endauth
 
-    @guest
-         <footer class="bg-white rounded-lg shadow-sm dark:bg-gray-800 m-2">
-            <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-                <div class="sm:flex sm:items-center sm:justify-between">
+                @guest
                     <span class="text-xl font-cal text-[#12d30f]"><a href="{{ route('index') }}">SaveNShare</a></span>
                     <ul class="flex flex-wrap items-center mb-6 mt-2 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
                         <li>
@@ -168,15 +154,16 @@
                             <a href="#" class="hover:underline me-4 md:me-6">Privacy Policy</a>
                         </li>
                     </ul>
-                </div>
-                <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-                <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© {{ now()->year }} SaveNShare</span>
+                @endguest
+                
             </div>
-        </footer>
-    @endguest
-   
+            <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+            <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© {{ now()->year }} SaveNShare</span>
+        </div>
+    </footer>
 
     <script>
+        // hide and show top nav
         var topNav = document.getElementById("topnav");
         var lastScrollTop = 0;
 
@@ -198,6 +185,7 @@
     </script>
 
     <script>
+        // disable button when submit form
         // Set form: x-data="formSubmit" @submit.prevent="submit" and button: x-ref="btn"
 
         document.addEventListener('alpine:init', () => {
@@ -219,6 +207,7 @@
     </script>
 
     <script>
+        // for copy post link (sharing icon)
         document.querySelectorAll('.copyButton').forEach(function(button, index) {
         button.addEventListener('click', function() {
             // Get the input field that corresponds to this button
@@ -226,7 +215,7 @@
             
             // Select the text field
             copyText.select();
-            copyText.setSelectionRange(0, 99999); // For mobile devices
+            copyText.setSelectionRange(0, 99999);
 
             // Copy the text inside the input
             document.execCommand('copy');

@@ -9,14 +9,16 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+// public homepage
 Route::get('/', [PostController::class, 'index'])->name('index');
 
-// Posts Routes
+// Routes
 Route::resource('posts', PostController::class);
 Route::resource('user', UserController::class);
 Route::resource('comment', CommentController::class);
 Route::resource('like', LikeController::class);
 
+// public posts page
 Route::get('/posts', [PostController::class, 'posts'])->name('posts');
 
 // routes for authenticated users
@@ -28,6 +30,8 @@ Route::middleware('auth')->group(function() {
     Route::get('/reset-user-password/{user}', [ResetPasswordController::class, 'userPasswordReset'])->name('userpassword.reset');
 
     Route::post('/update-user-password', [ResetPasswordController::class, 'userPasswordUpdate'])->name('userpassword.update');
+
+    Route::post('/like', [LikeController::class, 'store'])->name('like.store');
 });
 
 // routes for guests

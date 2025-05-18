@@ -18,13 +18,6 @@ class UserController extends Controller
     public function index(User $user)
     {
         //
-        // $user = Auth::user();
-
-        // if ($user == null) {
-        //     $user = Auth::user();
-        // }
-
-    //    return view('users.show', ['user' => $user]);
     }
 
     /**
@@ -48,8 +41,10 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        // show the posts of the user 6 at a time
         $userPosts = $user->posts()->latest()->paginate(6);
 
+        // redirect users to the view with the user's posts and the user object
         return view('users.show', ['posts' => $userPosts, 'user' => $user]);
     }
 
@@ -61,6 +56,7 @@ class UserController extends Controller
         // user authorization
         Gate::authorize('modify', $user);
 
+        // redirect to the edit post form
         return view('users.edit', ['user' => $user]);
     }
 

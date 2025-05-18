@@ -63,4 +63,10 @@ class LikePolicy
     {
         return false;
     }
+
+    public function modify(User $user, Like $like): bool
+    {
+        // check if the user id is the same as the like's user id
+        return $user->id === $like->user_id;
+    }
 }

@@ -55,8 +55,10 @@ class PostController extends Controller
             $path = Storage::disk('public')->put('posts_images', $request->image);
         }
 
+        // set the image path
         $fields['image'] = $path;
 
+        // create post
         $post = Auth::user()->posts()->create($fields);
 
         // Redirect to dashboard
@@ -68,10 +70,10 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        // display the comments of the posts
         $postComments = $post->comments()->latest()->paginate(10);
 
-        // dd($postComments);
-
+        // redirect to the view along with the post object and its comments
         return view('posts.show', ['comments' => $postComments, 'post' => $post]);
     }
 
@@ -80,9 +82,10 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        // posts authorization
+        // check whether the post is modifiable by the user
         Gate::authorize('modify', $post);
 
+        // redirect the user if the user is authorized by the policy
         return view('posts.edit', ['post' => $post]);
     }
 
@@ -91,6 +94,7 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        // check whether the post is modifiable by the user
         Gate::authorize('modify', $post);
 
     
@@ -114,7 +118,6 @@ class PostController extends Controller
         }
 
         // Update a post
-        // Post::create(['user_id' => Auth::id(), ...$fields]);
         $post->update([
             'title' => $request->title,
             'body' => $request->body,
@@ -138,20 +141,26 @@ class PostController extends Controller
             Storage::disk('public')->delete($post->image);
         }
 
-        $post->delete();
+        $post->delete(); // delete the post
+
+        // redirect
         return back()->with('deleted', 'Post was deleted');
     }
 
-
+    /**
+     * Show the posts that were queried
+     */
     public function posts(Request $request)
     {
-        $searchTerm = $request->input('search');
-        $sort = $request->input('sort', 'new');
+        $searchTerm = $request->input('search'); // value from search input field
+        $sort = $request->input('sort', 'new'); // value from the filter dropdown 
     
+        // filter the posts if search input field is not empty
         $posts = Post::when($searchTerm, function ($query) use ($searchTerm) {
             $query->where('title', 'like', '%' . $searchTerm . '%')
                     ->orWhere('body', 'like', '%' . $searchTerm . '%');
         })
+        // filter the posts if dropdown filter is selected
         ->when($sort, function ($query) use ($sort) {
             if ($sort === 'old') {
                 $query->oldest();
@@ -163,6 +172,7 @@ class PostController extends Controller
         })
         ->paginate(6);
 
+        // return the current view
         return view('posts.posts', ['posts' => $posts] );
     }
 }

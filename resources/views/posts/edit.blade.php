@@ -1,4 +1,5 @@
 <x-layout>
+    {{-- back to dashboard --}}
     <a href="{{ route('dashboard') }}" class="block mb-2 text-xs text-blue-500">&larr;Go back to your dashboard</a>
 
     <h1 class="title">Edit Post</h1>
@@ -22,6 +23,7 @@
                 
             </div>
             
+            {{-- Update content --}}
             <div class="mb-4">
                 <label for="body">Post Content</label>
     

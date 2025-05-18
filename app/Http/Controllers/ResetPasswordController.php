@@ -13,14 +13,16 @@ use Illuminate\Support\Str;
 
 class ResetPasswordController extends Controller
 {
+    // reset password from the profile page
     public function userPasswordReset(User $user) {
-
         // user authorization
         Gate::authorize('modify', $user);
 
+        // redirect user to the rest password form
         return view('auth.reset-user-password');
     }
 
+    // update password after submitting the form from the reset password page from profile page
     public function userPasswordUpdate(Request $request, User $user) {
         // Validate
         $fields = $request->validate([
@@ -41,6 +43,7 @@ class ResetPasswordController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
+        // redirect
         return redirect()->route('user.show', $user)->with('success', 'Password was updated');
     }
 

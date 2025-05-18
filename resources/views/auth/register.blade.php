@@ -44,11 +44,6 @@
 
             </div>
 
-            {{-- <div class="mb-4">
-                <input type="checkbox" name="subscribe" id="subscribe">
-                <label for="subscribe">Subscribe to our newsletter</label>
-            </div> --}}
-
             {{-- Submit Button --}}
             <button class="btn">Register</button>
 

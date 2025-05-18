@@ -8,14 +8,8 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    //
-
     // register user
     public function register(Request $request) {
-        // dd($request->username);
-
-        // dd('ok');
-
 
         // Validate
         $fields = $request->validate([
@@ -56,9 +50,7 @@ class AuthController extends Controller
                 'failed' => 'The provided credentials do not match our records.'
             ]);
         }
-            
-
-        // dd('OK');
+  
     }
 
     //logout user
@@ -68,7 +60,6 @@ class AuthController extends Controller
         $request->session()->invalidate(); // invalidate session
         $request->session()->regenerateToken(); // regenerate CSRF token
 
-        // return redirect()->route('home');
         return redirect('/');
     }
 }

@@ -36,13 +36,12 @@ class CommentController extends Controller
         $fields = $request->validate([
             'body' => ['required'],
             'post_id' => ['required', 'exists:posts,id'],
-            // 'user_id' => ['required', 'exists:users,id'],
         ]);
-
+        
+        // set user id as authenticated user id
         $fields['user_id'] = Auth::user()->id;
 
-        // dd($fields);
-
+        // created the comment along with the fields
         Auth::user()->comments()->create($fields);
 
         // Return the current view with a success message
@@ -78,9 +77,12 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
+        // check for authorization from the comment policy
         Gate::authorize('modify', $comment);
 
-        $comment->delete();
+        $comment->delete(); // delete comment
+
+        // redirect
         return back()->with('deleted', 'Comment was deleted');
     }
 }

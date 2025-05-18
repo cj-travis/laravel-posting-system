@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateLikeRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class LikeController extends Controller
 {
@@ -35,13 +36,12 @@ class LikeController extends Controller
         // Validate
         $fields = $request->validate([
             'post_id' => ['required', 'exists:posts,id'],
-            // 'user_id' => ['required', 'exists:users,id'],
         ]);
 
+        // set user id as authenticated user id
         $fields['user_id'] = Auth::user()->id;
 
-        // dd($fields);
-
+        // create like data
         Auth::user()->likes()->create($fields);
 
         // Increment the likes column on the Post model
@@ -81,6 +81,8 @@ class LikeController extends Controller
      */
     public function destroy(Like $like)
     {
+        // check for authorization from the like policy
+        Gate::authorize('modify', $like);
 
         // decrement the likes column on the Post model
         $post = Post::find($like->post_id); 
@@ -88,6 +90,7 @@ class LikeController extends Controller
 
         $like->delete(); // delete the like
 
+        // redirect
         return back()->with('deleted', 'Like was deleted');
     }
 }

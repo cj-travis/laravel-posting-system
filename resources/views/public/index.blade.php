@@ -1,8 +1,8 @@
 <x-layout>
-    <div class="flex flex-col w-full mx-auto h-[86dvh] justify-center items-center">
-    {{-- <img src="{{ asset('storage/wallpaper.jpeg') }}" alt="" class="absolute w-[92%] h-[92%] -z-1 object-cover brightness-100 blur-xs"> --}}
+    {{-- landing page --}}
+    <div class="flex flex-col w-full mx-auto h-[calc(100dvh-150px)] justify-center items-center">
 
-      <div class="flex flex-col w-full mx-auto h-full justify-center items-center">
+      <div class="flex flex-col w-fit mx-auto h-full justify-center items-center">
         <div class="text-5xl md:text-[70px] font-cal text-[#12d30f] w-fit mx-auto text-shadow-md mb-0 leading-20 flex flex-row fadeIn-animation">
           <div class="hop-animation leading-none"><span>Save</span></div>
           <div class="leading-none"><span>N</span></div>
@@ -15,15 +15,17 @@
           <p class="text-sm">Remember, Sharing is Caring <span class="text-red-500">❤</span></p>
 
         </div>
+
+        
       </div>
-      
       <div class="mt-auto mb-0 flex flex-col justify-center items-center">
         <span class="text-sm mb-2">Scroll to see top posts!</span>
         <i class="fa-solid fa-arrow-down animate-bounce"></i>
-
       </div>
+      
     </div>
 
+    {{-- top posts, for now is top 6 post --}}
     <div class="mt-12 md:grid md:grid-cols-2 md:gap-6">
         @foreach ($posts as $post)
 
@@ -34,6 +36,7 @@
         @endforeach
     </div>
 
+    {{-- redirect to view all posts --}}
     <a href="{{ route('posts') }}" class="hover:underline flex w-fit mx-auto mt-2 mb-6 text">See more</a>
     
 </x-layout>
