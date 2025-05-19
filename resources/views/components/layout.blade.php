@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ $title ?'SaveNShare: ' . $title : 'SaveNShare' }}</title>
     @vite('resources/css/app.css')
     <script src="//unpkg.com/alpinejs" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -12,7 +13,7 @@
   </head>
   <body>
     {{-- Top Navbar --}}
-    <nav class="bg-white z-10 h-[80px] shadow flex flex-row items-center absolute" id="topnav">
+    <nav class="bg-white z-20 h-[80px] shadow flex flex-row items-center absolute" id="topnav">
         <div class="w-full flex flex-row justify-between px-6 py-4">
             <div class="w-fit my-auto">
                 @auth
@@ -41,6 +42,9 @@
                     <i class="fa-solid fa-xmark" @click="open = !open" x-show="open"></i>
                     <ul class="bg-white shadow-lg absolute top-[80px] right-0 overflow-hidden font-light px-6"  x-show="open" @click.outside="open = false">
                         <li class="p-3"><a href="{{ route('user.show', Auth::user()) }}">Profile</a></li>
+                        @if (Auth::user()->role === "admin")
+                            <li class="p-3"><a href="{{ route('admin-dashboard') }}">Admin</a></li>
+                        @endif
                         <li class="p-3"><a href="{{ route('login') }}">Dashboard</a></li>
                         <li class="p-3"><a href="{{ route('posts') }}">Posts</a></li>
                         <li class="p-3">
@@ -71,6 +75,9 @@
                                 Profile
                             </a>
                         </li>
+                        @if (Auth::user()->role === "admin")
+                            <li class="p-3"><a href="{{ route('admin-dashboard') }}">Admin</a></li>
+                        @endif
                         <li class="p-3"><a href="{{ route('login') }}">Dashboard</a></li>
                         <li class="p-3"><a href="{{ route('posts') }}">Posts</a></li>
                         <li class="py-1">

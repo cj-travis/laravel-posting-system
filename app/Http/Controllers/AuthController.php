@@ -42,7 +42,20 @@ class AuthController extends Controller
         // Try to Login
         if(Auth::attempt($fields, $request->remember)) 
         {
-            return redirect()->route('posts');
+            // redirect back if account is blocked
+            if (strtolower(Auth::user()->status == 'blocked')) {
+                Auth::logout();
+
+                $request->session()->invalidate(); // invalidate session
+                $request->session()->regenerateToken(); // regenerate CSRF token
+
+                return back()->withErrors([
+                    'failed' => 'Your account has been blocked'
+                ]);
+            }
+
+            // redirect
+            return (strtolower(Auth::user()->role == 'admin') ? redirect()->route('admin-dashboard') : redirect()->route('posts'));
         }
         else
         {

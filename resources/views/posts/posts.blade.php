@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout :title="'Posts'">
     <div class="w-full flex flex-row justify-between">
         {{-- display total posts --}}
         <h1 class="title">All Posts ({{ $posts->total() }})</h1>

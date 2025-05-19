@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout :title="'Home'">
     {{-- landing page --}}
     <div class="flex flex-col w-full mx-auto h-[calc(100dvh-150px)] justify-center items-center">
 

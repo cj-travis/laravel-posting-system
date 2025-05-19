@@ -7,6 +7,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
 // public homepage
@@ -32,6 +33,19 @@ Route::middleware('auth')->group(function() {
     Route::post('/update-user-password', [ResetPasswordController::class, 'userPasswordUpdate'])->name('userpassword.update');
 
     Route::post('/like', [LikeController::class, 'store'])->name('like.store');
+
+    
+});
+
+// routes for authenticated admins
+Route::middleware(['auth', AdminMiddleware::class])->group(function() {
+    Route::get('/admin-dashboard', [DashboardController::class, 'adminDashboard'])->middleware([AdminMiddleware::class])->name('admin-dashboard');
+
+    Route::put('/update-role/{user}', [UserController::class, 'updateRole'])->middleware([AdminMiddleware::class]) ->name('role.update');
+
+    Route::put('/user-update-status/{user}', [UserController::class, 'updateUserStatus'])->middleware([AdminMiddleware::class]) ->name('user-status.update');
+    
+    Route::put('/post-update-status/{post}', [PostController::class, 'updatePostStatus'])->middleware([AdminMiddleware::class]) ->name('post-status.update');
 });
 
 // routes for guests

@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout :title="'Profile'">
      {{-- Session messages --}}
     @if (session('success'))
         <x-flashMsg msg="{{ session('success') }}" bg="bg-green-500"/>
@@ -14,7 +14,10 @@
     <h1 class="title">{{ $user->username }}'s Profile</h1>
 
     {{-- display profile details --}}
-    <div class="card flex flex-col mt-4 h-fit justify-center gap-12" x-data="{ open: {{ session('modalOpen') ? 'true' : 'false' }} }">
+    <div 
+        class="card flex flex-col mt-4 h-fit justify-center gap-12"
+        x-data="{ open: false }" 
+        x-init="open = @json($errors->has('password') || $errors->has('delete_account'))">
         <div class="flex flex-row gap-12">
             <div class="w-[250px]">
 
@@ -28,17 +31,24 @@
                 @endif
             </div>
 
-            {{-- display id, name and email --}}
-            <div class="flex flex-col h-fit my-auto">
-                <span>
-                    Id: {{ $user->id }}
-                </span>
-                <span>
-                    Name: {{ $user->username }}
-                </span>
-                <span>
-                    Email: {{ $user->email }}
-                </span>
+            {{-- display id, name, email and date joined --}}
+            <div class="flex flex-col h-fit my-auto gap-2 md:gap-0">
+                <div class="flex flex-row">
+                    <span class="text text-slate-600">Id: &nbsp;</span>
+                    <span class="text text-slate-600">{{ $user->id }}</span>
+                </div>
+                <div class="flex flex-col md:flex-row">
+                    <span class="text text-slate-600">Name: &nbsp;</span>
+                    <span>{{ $user->username }}</span>
+                </div>
+                <div class="flex flex-col md:flex-row">
+                    <span class="text text-slate-600">Email: &nbsp;</span>
+                    <span>{{ $user->email }}</span>
+                </div>
+                <div class="flex flex-col md:flex-row">
+                    <span class="text text-slate-600">Joined since: &nbsp;</span>
+                    <span>{{ $user->created_at->format('d F Y') }}</span>
+                </div>
             </div>
         </div>
     
@@ -50,7 +60,7 @@
                 <button class="btn text" @click="open = true">Delete Account</button>
             </div>
 
-            <div x-show="open" x-transition class="fixed inset-0 bg-slate-700 z-10 flex justify-center items-center" style="background-color: rgba(0, 0, 0, 0.5);" @click.away="open = false; $wire.set('modalOpen', false)">
+            <div x-show="open" x-transition class="fixed inset-0 bg-slate-700 z-10 flex justify-center items-center" style="background-color: rgba(0, 0, 0, 0.5);" @click.away="open = false;">
                 <div  class="bg-white p-6 rounded-lg shadow-lg w-96">
                     <div class="flex flex-row w-full justify-between gap-2 mb-2">
                         <span class="title">Delete Account</span>
@@ -88,24 +98,30 @@
         @endif
     </div>
 
-    {{-- User posts --}}
-    <h2 class="mt-6 mb-2">{{ $user->username }}'s posts ({{ $posts->total() }})</h2>
+    {{-- hide posts if user is blocked --}}
+    @if ($user->status == 'blocked')
+        <div class="w-full bg-red-500 p-2 my-2 rounded">This user is blocked</div>
+    @else
+        {{-- User posts --}}
+        <h2 class="mt-6 mb-2">{{ $user->username }}'s posts ({{ $posts->total() }})</h2>
 
-    <div class="mb-4 md:grid md:grid-cols-2 md:gap-6">
-        @if ($posts->count() == 0)
-            <div class="w-fit mx-auto my-12"><span>No results found</span></div>
-        @else
-            @foreach ($posts as $post)
+        <div class="mb-4 md:grid md:grid-cols-2 md:gap-6">
+            @if ($posts->count() == 0)
+                <div class="w-fit mx-auto my-12"><span>No results found</span></div>
+            @else
+                @foreach ($posts as $post)
 
-                <div class="card my-2 md:my-0">
-                    <x-postCard :post="$post"/>
-                </div>
-            @endforeach
-        @endif
-        
-    </div>
+                    <div class="card my-2 md:my-0">
+                        <x-postCard :post="$post"/>
+                    </div>
+                @endforeach
+            @endif
+            
+        </div>
 
-    <div>
-        {{ $posts->links() }}
-    </div>
+        <div>
+            {{ $posts->links() }}
+        </div>
+    @endif
+    
 </x-layout>

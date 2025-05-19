@@ -1,5 +1,5 @@
 
-<x-layout>
+<x-layout :title="'Reset Password'">
     <a href="{{ route('user.show', Auth::user()) }}" class="block mb-2 text-xs text-blue-500">&larr;Go back to profile</a>
 
     <h1 class="title">Reset your password</h1>

@@ -42,7 +42,10 @@ class UserController extends Controller
     public function show(User $user)
     {
         // show the posts of the user 6 at a time
-        $userPosts = $user->posts()->latest()->paginate(6);
+        $userPosts = $user->posts()->where('status', '!=', 'blocked')
+            ->whereHas('user', function ($query) {
+                $query->where('status', '!=', 'blocked');
+            })->latest()->paginate(6);
 
         // redirect users to the view with the user's posts and the user object
         return view('users.show', ['posts' => $userPosts, 'user' => $user]);
@@ -114,14 +117,14 @@ class UserController extends Controller
         if (!Hash::check($request->password, $user->password)) {
 
             // Return an error if the password is incorrect
-            return redirect()->route('user.show', $user)->withErrors(['password' => 'incorrect password'])->with('modalOpen', true);
+            return redirect()->route('user.show', $user)->withErrors(['password' => 'incorrect password']);
         }
 
         // Check password
         if ($request->delete_account !== 'delete') {
 
             // Return an error if the password is incorrect
-            return redirect()->route('user.show', $user)->withErrors(['delete_account' => 'Please ensure its typed correctly'])->with('modalOpen', true);
+            return redirect()->route('user.show', $user)->withErrors(['delete_account' => 'Please ensure its typed correctly']);
         }
 
         // delete profile picture if exists
@@ -135,5 +138,77 @@ class UserController extends Controller
 
         // redirect to homepage
         return redirect()->route('/')->with('success', 'Account deleted successfully');
+    }
+
+    /**
+     * Update user role.
+     */
+    public function updateRole(User $user)
+    {
+        // check logged in user role
+        if (Auth::user()->role !== 'admin') {
+            // Redirect to dashboard
+            return redirect()->route('posts')->with('failed', 'Unauthorized access');
+        }
+
+        // new role
+        $newRole = 'user';
+
+        // update role if updated user role is not himself
+        if ($user->id !== Auth::user()->id) {
+            if ($user->role == 'user') {
+                $newRole = 'admin';
+
+                // prevent all admins being deleted
+                $adminCount = User::where('role', 'admin')->count();
+
+                if ($adminCount < 2) {
+                    // Redirect to dashboard with error
+                    return redirect()->route('admin-dashboard', $user)->with('failed', 'Must have at least 1 admin.');
+                }
+            }
+
+            // update role
+            $user->role = $newRole;
+            $user->save();
+
+            // Redirect to dashboard
+            return redirect()->route('admin-dashboard', $user)->with('success', 'Updated user ' . $user->id . ' to ' . $newRole);
+        }
+
+        // Redirect to dashboard with error
+        return redirect()->route('admin-dashboard', $user)->with('failed', 'You cannot update your own role');
+    }
+
+    /**
+     * Update user status.
+     */
+    public function updateUserStatus(User $user)
+    {
+        // check logged in user role
+        if (Auth::user()->role !== 'admin') {
+            // Redirect to dashboard
+            return redirect()->route('posts')->with('failed', 'Unauthorized access');
+        }
+
+        // new status
+        $newStatus = 'blocked';
+
+        // update status if updated user is not himself
+        if ($user->id !== Auth::user()->id) {
+            if ($user->status == 'blocked') {
+                $newStatus = 'active';
+            }
+
+            // update status
+            $user->status = $newStatus;
+            $user->save();
+
+            // Redirect to dashboard
+            return back()->with('success', 'Updated user ' . $user->id . ' to ' . $newStatus);
+        }
+
+        // Redirect to dashboard with error
+        return back()->with('failed', 'You cannot update your own status');
     }
 }

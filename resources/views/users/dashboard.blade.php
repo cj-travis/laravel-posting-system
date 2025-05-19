@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout :title="'Dashboard'">
     {{-- Session messages --}}
     @if (session('success'))
         <x-flashMsg msg="{{ session('success') }}" bg="bg-green-500"/>

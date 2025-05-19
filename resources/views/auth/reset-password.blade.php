@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout :title="'Reset Password'">
 
     <h1 class="title">Reset your password</h1>
 

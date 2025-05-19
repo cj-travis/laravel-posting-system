@@ -25,7 +25,7 @@
 
             {{-- display image if exist --}}
             @if ($post->image && !$full)
-                <img class="block sm:hidden md:block xl:hidden w-full sm:w-[30%] md:w-full xl:w-[30%] object-cover max-h-[200px] rounded-lg mb-2" src="{{ asset('storage/' . $post->image) }}" alt="">
+                <a href="{{ route('posts.show', $post->id) }}"><img class="block sm:hidden md:block xl:hidden w-full sm:w-[30%] md:w-full xl:w-[30%] object-cover max-h-[200px] rounded-lg mb-2" src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->id . 'image' }}"></a>
             @endif
            
             {{-- body --}}
@@ -34,7 +34,7 @@
                     <span>{{ $post->body }}</span>
                 </div>
                 @if ($post->image || $full)
-                    <img class="w-fit object-cover max-h-[200px] rounded-lg mt-2" src="{{ asset('storage/' . $post->image) }}" alt="">
+                    <a href="{{ asset('storage/' . $post->image) }}" target="_blank"><img class="w-fit object-cover max-h-[200px] rounded-lg mt-2" src="{{ asset('storage/' . $post->image) }}" alt=""></a>
                 @endif
             @else
                 <span class="text">{{ Str::words($post->body, 15) }}</span>
@@ -111,7 +111,7 @@
 
     {{-- display image if exist --}}
     @if ($post->image  && !$full)
-        <img class="hidden sm:block md:hidden xl:block w-full sm:w-[30%] md:w-full xl:w-[30%] object-cover max-h-[200px] rounded-lg" src="{{ asset('storage/' . $post->image) }}" alt="">
+        <a href="{{ route('posts.show', $post->id) }}" class="hidden sm:block md:hidden xl:block w-full sm:w-[30%] md:w-full xl:w-[30%]"><img class="w-full object-cover max-h-[200px] rounded-lg" src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->id . 'image' }}"></a>
     @endif
     
 </div>

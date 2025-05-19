@@ -1,5 +1,5 @@
 
-<x-layout>
+<x-layout :title="'Login'">
 
     <h1 class="title w-fit mb-4 md:mx-auto">Login</h1>
 

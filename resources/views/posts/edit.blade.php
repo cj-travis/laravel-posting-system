@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout :title="'Edit Post'">
     {{-- back to dashboard --}}
     <a href="{{ route('dashboard') }}" class="block mb-2 text-xs text-blue-500">&larr;Go back to your dashboard</a>
 

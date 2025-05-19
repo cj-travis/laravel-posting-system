@@ -17,12 +17,15 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        // get the most 6 likes posts where its or its user is not blocked
+        $posts = Post::where('status', '!=', 'blocked')
+            ->whereHas('user', function ($query) {
+                $query->where('status', '!=', 'blocked');
+            })
+            ->orderBy('likes', 'desc')
+            ->paginate(6);
 
-        $posts = Post::orderBy('likes', 'desc')->paginate(6);
-
-        // dd($posts);
-
+        // redirect
         return view('public.index', ['posts' => $posts] );
     }
 
@@ -70,8 +73,10 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        // display the comments of the posts
-        $postComments = $post->comments()->latest()->paginate(10);
+        // display the comments of the posts where users are not blocked
+        $postComments = $post->comments()->whereHas('user', function ($query) {
+                $query->where('status', '!=', 'blocked');
+            })->latest()->paginate(10);
 
         // redirect to the view along with the post object and its comments
         return view('posts.show', ['comments' => $postComments, 'post' => $post]);
@@ -160,6 +165,11 @@ class PostController extends Controller
             $query->where('title', 'like', '%' . $searchTerm . '%')
                     ->orWhere('body', 'like', '%' . $searchTerm . '%');
         })
+        // filter out blocked users and posts
+        ->where('status', '!=', 'blocked')
+        ->whereHas('user', function ($query) {
+            $query->where('status', '!=', 'blocked');
+        })
         // filter the posts if dropdown filter is selected
         ->when($sort, function ($query) use ($sort) {
             if ($sort === 'old') {
@@ -174,5 +184,32 @@ class PostController extends Controller
 
         // return the current view
         return view('posts.posts', ['posts' => $posts] );
+    }
+
+    /**
+     * Update post status.
+     */
+    public function updatePostStatus(Post $post)
+    {
+        // check logged in user role
+        if (Auth::user()->role !== 'admin') {
+            // Redirect to dashboard
+            return redirect()->route('posts')->with('failed', 'Unauthorized access');
+        }
+
+        // new status
+        $newStatus = 'blocked';
+
+        // update status
+        if ($post->status == 'blocked') {
+            $newStatus = 'show';
+        }
+
+        $post->status = $newStatus;
+        $post->save();
+
+        // Redirect to dashboard
+        return back()->with('success', 'Updated post ' . $post->id . ' to ' . $newStatus);
+
     }
 }
