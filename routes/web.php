@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 // public homepage
 Route::get('/', [PostController::class, 'index'])->name('index');
+Route::view('/goodbye', 'users.goodbye')->name('goodbye');
 
 // Routes
 Route::resource('posts', PostController::class);

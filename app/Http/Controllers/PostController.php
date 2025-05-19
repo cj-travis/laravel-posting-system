@@ -162,15 +162,18 @@ class PostController extends Controller
     
         // filter the posts if search input field is not empty
         $posts = Post::when($searchTerm, function ($query) use ($searchTerm) {
-            $query->where('title', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('body', 'like', '%' . $searchTerm . '%');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'like', '%' . $searchTerm . '%')
+                ->orWhere('body', 'like', '%' . $searchTerm . '%')
+                ->orWhereHas('user', function ($q2) use ($searchTerm) {
+                    $q2->where('username', 'like', '%' . $searchTerm . '%');
+                });
+            });
         })
-        // filter out blocked users and posts
         ->where('status', '!=', 'blocked')
         ->whereHas('user', function ($query) {
             $query->where('status', '!=', 'blocked');
         })
-        // filter the posts if dropdown filter is selected
         ->when($sort, function ($query) use ($sort) {
             if ($sort === 'old') {
                 $query->oldest();
@@ -180,6 +183,7 @@ class PostController extends Controller
                 $query->latest();
             }
         })
+        ->with('user')
         ->paginate(6);
 
         // return the current view

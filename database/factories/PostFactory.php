@@ -18,8 +18,13 @@ class PostFactory extends Factory
     {
         return [
             'user_id' => fake()->numberBetween(1, 5),
-            'title' => fake()->sentence(),
-            'body' => implode("\n\n", fake()->paragraphs(3)),
+            // 'title' => fake()->sentence(),
+            // 'body' => implode("\n\n", fake()->paragraphs(3)),
+            'title' => fake()->realText(rand(40, 50)),
+            'body' => collect([
+                fake()->realTextBetween(170, 400),
+                fake()->realTextBetween(170, 400),
+            ])->implode("\n\n"),
             'image' => fake()->randomElement([
                 'posts_images/image1.jpeg',
                 'posts_images/image2.jpeg',

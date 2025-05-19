@@ -59,9 +59,9 @@
                     @foreach ($result as $post)
                         <tr>
                             <td class="bg-white sticky left-0 z-1 w-[5%]">{{ $post->id }}</td>
-                            <td class="text-left max-w-[20%]">{{  Str::words($post->title, 6) }}</td>
+                            <td class="text-left max-w-[20%]"><a href="{{ route('posts.show', $post) }}" class="underline">{{  Str::words($post->title, 6) }}</a></td>
                             <td class="text-left max-w-[25%]">{{  Str::words($post->body, 15) }}</td>
-                            <td class="w-[10%]">{{ $post->user->username }}</td>
+                            <td class="w-[10%]"><a href="{{ route('user.show', $post->user) }}" class="underline">{{ $post->user->username }}</a></td>
                             <td class="w-[8%]">{{ $post->user_id }}</td>
                             <td class="w-[15%]">{{ $post->created_at }}</td>
                             <td class="bg-white sticky right-0 z-1 w-[17%] ">
@@ -72,9 +72,9 @@
                                     @csrf
                                     @method('PUT')
                                     @if ($post->status == 'blocked')
-                                        <button class="btn w-[80%] lg:w-[50%] mx-auto hover:cursor-pointer">Unblock</button>
+                                        <button class="btn w-[80%] lg:w-[50%] mx-auto hover:cursor-pointer bg-green-600">Unblock</button>
                                     @else
-                                        <button class="btn w-[80%] lg:w-[50%] mx-auto hover:cursor-pointer">Block</button>
+                                        <button class="btn w-[80%] lg:w-[50%] mx-auto hover:cursor-pointer bg-red-600">Block</button>
                                     @endif
                                 </form>
                             </td>
@@ -100,7 +100,7 @@
                     @foreach ($result as $user)
                         <tr>
                             <td class="w-[5%] bg-white sticky left-0 z-1">{{ $user->id }}</td>
-                            <td class="w-[20%]">{{ $user->username }}</td>
+                            <td class="w-[20%]"><a href="{{ route('user.show', $user) }}" class="underline">{{ $user->username }}</a></td>
                             <td class="w-[20%]">{{ $user->email }}</td>
                             <td class="w-[15%]">{{ $user->created_at }}</td>
                             <td class="w-[13%]">{{ $user->posts_count }}</td>
@@ -113,9 +113,9 @@
                                         @csrf
                                         @method('PUT')
                                         @if ($user->role == 'admin')
-                                            <button class="btn w-[80%] lg:w-[50%] mx-auto hover:cursor-pointer">Set User</button>
+                                            <button class="btn w-[80%] lg:w-[50%] mx-auto hover:cursor-pointer bg-slate-900">Set User</button>
                                         @else
-                                            <button class="btn w-[80%] lg:w-[50%] mx-auto hover:cursor-pointer">Set Admin</button>
+                                            <button class="btn w-[80%] lg:w-[50%] mx-auto hover:cursor-pointer bg-slate-700">Set Admin</button>
                                         @endif
                                     </form>
                                 </div>
@@ -127,9 +127,9 @@
                                         @csrf
                                         @method('PUT')
                                         @if ($user->status == 'blocked')
-                                            <button class="btn w-[80%] lg:w-[50%] mx-auto hover:cursor-pointer">Unblock</button>
+                                            <button class="btn w-[80%] lg:w-[50%] mx-auto hover:cursor-pointer bg-green-600">Unblock</button>
                                         @else
-                                            <button class="btn w-[80%] lg:w-[50%] mx-auto hover:cursor-pointer">Block</button>
+                                            <button class="btn w-[80%] lg:w-[50%] mx-auto hover:cursor-pointer bg-red-600">Block</button>
                                         @endif
                                     </form>
                                 </div>

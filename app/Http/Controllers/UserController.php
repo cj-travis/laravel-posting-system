@@ -133,11 +133,18 @@ class UserController extends Controller
             Storage::disk('public')->delete($user->profile_picture);
         }
 
+        // delete all pictures of user's posts
+        foreach ($user->posts as $post) {
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+        }
+
         // delete the user
         $user->delete();
 
-        // redirect to homepage
-        return redirect()->route('/')->with('success', 'Account deleted successfully');
+        // redirect to goodbye page
+        return redirect()->route('goodbye')->with('success', 'Account deleted successfully');
     }
 
     /**
@@ -158,14 +165,6 @@ class UserController extends Controller
         if ($user->id !== Auth::user()->id) {
             if ($user->role == 'user') {
                 $newRole = 'admin';
-
-                // prevent all admins being deleted
-                $adminCount = User::where('role', 'admin')->count();
-
-                if ($adminCount < 2) {
-                    // Redirect to dashboard with error
-                    return redirect()->route('admin-dashboard', $user)->with('failed', 'Must have at least 1 admin.');
-                }
             }
 
             // update role

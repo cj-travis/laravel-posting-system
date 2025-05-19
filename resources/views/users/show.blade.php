@@ -18,7 +18,7 @@
         class="card flex flex-col mt-4 h-fit justify-center gap-12"
         x-data="{ open: false }" 
         x-init="open = @json($errors->has('password') || $errors->has('delete_account'))">
-        <div class="flex flex-row gap-12">
+        <div class="flex flex-row gap-12 justify-center items-center ">
             <div class="w-[250px]">
 
                 {{-- profile picture --}}
@@ -105,10 +105,12 @@
         {{-- User posts --}}
         <h2 class="mt-6 mb-2">{{ $user->username }}'s posts ({{ $posts->total() }})</h2>
 
-        <div class="mb-4 md:grid md:grid-cols-2 md:gap-6">
+        
             @if ($posts->count() == 0)
-                <div class="w-fit mx-auto my-12"><span>No results found</span></div>
+            <div class="w-full flex">
+                <span class="w-fit mx-auto my-6 text-center">No results found</span>
             @else
+            <div class="mb-4 md:grid md:grid-cols-2 md:gap-6 w-full">
                 @foreach ($posts as $post)
 
                     <div class="card my-2 md:my-0">
