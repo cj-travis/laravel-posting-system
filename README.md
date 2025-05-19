@@ -1,13 +1,13 @@
-# Laravel 12 Posting System
+# Laravel 12 Posting System: SaveNShare
 
-A simple posting system built with **Laravel 12**. This application allows users to create, read, update, and delete posts. The guide below provides setup instructions for **Windows**, **macOS**, and **Linux** environments.
+A simple posting system named SaveNShare built with **Laravel 12**. This application allows users to create, read, update, and delete posts, users, comments and likes. The guide below provides setup instructions for **Windows**, **macOS**, and **Linux** environments.
 
 ---
 
 ## 🚀 Features
 
 - Laravel 12 with Vite
-- CRUD functionality for posts
+- CRUD functionality for posts, users, comments and likes
 - MySQL database integration
 - Local development setup for all major operating systems
 
